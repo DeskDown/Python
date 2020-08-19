@@ -1,6 +1,4 @@
-import datetime as dt
-
-t = dt.date.today()
-
-
-print(t, type(t), sep=", ")
+try:
+    5/0
+except ZeroDivisionError as e:
+    raise ValueError("cannot divide by 0") from None
