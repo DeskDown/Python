@@ -1,4 +1,6 @@
-try:
-    5/0
-except ZeroDivisionError as e:
-    raise ValueError("cannot divide by 0") from None
+import sys
+
+print(sys.path)
+
+
+sys.path.append("c:\\Users\\rehma\\Documents\\pycode")
