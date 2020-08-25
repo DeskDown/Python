@@ -1,8 +1,8 @@
 import pygame as pg
-from queue import PriorityQueue
+from queue import Empty, PriorityQueue
 
 SC_SIZE = 800
-ROWS = 50
+ROWS = 20
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -222,6 +222,12 @@ def get_clk_pos(pos, rows, width):
     return (px,py)
 
 #--------------------------------------------------------------------------------------#
+def empty_the_queue(pq):
+    while not pq.empty():
+        node = pq.get()[2]
+        node.reset_color()
+
+#--------------------------------------------------------------------------------------#
 
 def make_final_path(came_from, current, draw):
     """Draw the final path
@@ -274,6 +280,9 @@ def find_path(draw, grid, start, end):
         current = pq.get()[2]
         #pq_items.remove(current)
         if current == end:
+            # we have found the path
+            # no further consderation, so empty the queue
+            empty_the_queue(pq)
             current.make_ending_pos()
             make_final_path(came_from, end, draw)
             return True
@@ -285,11 +294,11 @@ def find_path(draw, grid, start, end):
                 # we have found a better path to reach this neighbour from start node
                 # we store the trace
                 came_from[nbr] = current
-                # update the g(n) for the neighbour
+                # update the g(n) of the neighbour
                 g_score[nbr] = tmp_g
-                # estimate h(n) for neighbout
+                # estimate h(n) of neighbout
                 f_score[nbr] = tmp_g + H(nbr.get_pos(), end.get_pos())
-                # add this to the queue
+                # add this data to the queue
                 if True: #nbr not in pq_items:
                     count += 1
                     pq.put((f_score[nbr],count, nbr))
@@ -324,6 +333,7 @@ def main(win, width):
                 pos = pg.mouse.get_pos()
                 # get node pos
                 row, col = get_clk_pos(pos, ROWS, width)
+                # get clicked node
                 node = grid[row][col]
                 if not start_node and node != end_node:
                     start_node = node
@@ -335,6 +345,7 @@ def main(win, width):
                     node.make_barrier()
             elif pg.mouse.get_pressed()[2]:
                 # right click
+                # reset the node state
                 pos = pg.mouse.get_pos()
                 # get node pos
                 row, col = get_clk_pos(pos, ROWS, width)
@@ -344,7 +355,9 @@ def main(win, width):
                     end_node = None
                 elif node == start_node:
                     start_node = None
+
             if e.type == pg.KEYDOWN:
+                # Enter space key to start searching the path
                 if e.key == pg.K_SPACE and start_node and end_node:
                     #update the neighbors
                     for row in grid:
@@ -361,4 +374,5 @@ def main(win, width):
 
     pg.quit()
 
-main(WIN, SC_SIZE)
+if __name__ == "__main__":
+    main(WIN, SC_SIZE)
