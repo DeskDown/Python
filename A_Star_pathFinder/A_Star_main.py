@@ -174,13 +174,11 @@ def draw_grid(win, rows, width):
         start = (0, r * gap)
         stop = (width, r*gap)
         pg.draw.line(win, L_GREY, start, stop)
-
-    for c in range(rows):
         # Vertical lines
-        start = (c * gap, 0)
-        stop = (c * gap, width)
+        start = (r * gap, 0)
+        stop = (r * gap, width)
         pg.draw.line(win, L_GREY, start, stop)
-
+    
 #--------------------------------------------------------------------------------------#
 
 def redraw(win, grid, rows, width):
